@@ -2,7 +2,7 @@
 "   directory
 hi default link User1 Directory
 "   filename
-hi default link User2 ModeMsg
+hi default link User2 String
 "   filetype
 hi default link User3 Type
 "   fugitive
