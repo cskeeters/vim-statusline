@@ -63,7 +63,7 @@ else
     set statusline+=\ \ %2*\ %{FileSubPath()}%m\ %0*            " Filename/Modified
 endif
 set statusline+=%=                                              " Right Aligned
-set statusline+=%l/%L\                                          " cursor pos
+set statusline+=%v/%l/%L\                                       " cursor pos
 set statusline+=\ \ %3*\ %{&ft}\ %0*\                           " Filetype
 set statusline+=%{&fenc?&fenc:&enc}/%{&ff}\                     " Encoding/EOL
 set statusline+=%w                                              " Preview
