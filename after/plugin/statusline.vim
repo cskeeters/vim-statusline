@@ -16,7 +16,20 @@ function! AUE(str)
     return ""
 endfunction
 
-function! Base()
+function! IsFake()
+    if !filewritable(bufname('%'))
+        return 1
+    endif
+
+    return 0
+endfunction
+
+function! StatusLineBase()
+    " vcvars will cause errors if this buffer doesn't represent a file
+    if IsFake()
+        return ""
+    endif
+
     let [vcs, root, branch] = vcvars#CVcVars()
 
     if vcs == ''
@@ -32,7 +45,7 @@ function! Base()
     return ret
 endfunction
 
-function! Branch()
+function! StatusLineBranch()
     let [vcs, root, branch] = vcvars#CVcVars()
     if vcs == ''
         return ''
@@ -42,7 +55,7 @@ function! Branch()
 endfunction
 
 " Like %<%f, but handles stripping parent folder better
-function! FileSubPath()
+function! StatusLineFileSubPath()
     let root = getcwd()
     let filepath = fnamemodify(bufname('%'), ":p")
     if stridx(l:filepath, l:root) > -1 && l:root != '/'
@@ -54,13 +67,13 @@ function! FileSubPath()
 endfunction
 
 if exists("g:vcvars")
-    set statusline=\ \ %1*\ %{Base()}\ %0*                      " current root or dir
-    set statusline+=\ \ %2*\ %{FileSubPath()}%m\ %0*            " Filename/Modified
-    set statusline+=\ %4*%{AUE(Branch())}%0*                    " VCS branch
+    set statusline=\ \ %1*\ %{StatusLineBase()}\ %0*            " current root or dir
+    set statusline+=\ \ %2*\ %{StatusLineFileSubPath()}%m\ %0*  " Filename/Modified
+    set statusline+=\ %4*%{AUE(StatusLineBranch())}%0*          " VCS branch
 else
     set statusline=\ \ %1*\ %{getcwd()}\ %0*                    " current root or dir
-    " set statusline+=\ \ %2*\ %f%m\ %0*                          " Filename/Modified
-    set statusline+=\ \ %2*\ %{FileSubPath()}%m\ %0*            " Filename/Modified
+    " set statusline+=\ \ %2*\ %f%m\ %0*                        " Filename/Modified
+    set statusline+=\ \ %2*\ %{StatusLineFileSubPath()}%m\ %0*  " Filename/Modified
 endif
 set statusline+=%=                                              " Right Aligned
 set statusline+=%v/%l/%L\                                       " cursor pos
